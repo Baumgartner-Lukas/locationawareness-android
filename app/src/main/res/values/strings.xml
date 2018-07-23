@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PT-locationawareness</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="placeholderLines">---</string>
+    <string name="tap_to_enter_city">Tap to enter city</string>
+    <string name="city_name">Bezirk eingeben</string>
+</resources>
