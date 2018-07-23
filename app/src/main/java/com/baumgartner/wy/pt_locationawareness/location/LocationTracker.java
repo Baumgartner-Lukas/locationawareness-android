@@ -37,6 +37,11 @@ public class LocationTracker extends Service implements LocationListener {
         return null;
     }
 
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -58,8 +63,5 @@ public class LocationTracker extends Service implements LocationListener {
 
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
 
-    }
 }

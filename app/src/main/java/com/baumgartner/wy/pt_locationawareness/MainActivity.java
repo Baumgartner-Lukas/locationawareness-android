@@ -52,56 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
             LocationTracker locationTracker = new LocationTracker(this);
             mLocation = locationTracker.getLocation();
-            if(mLocation == null){
+            if (mLocation == null) {
                 mLatitude.setText("-1");
                 mLongitude.setText("-1");
-            }else {
+            } else {
                 mLatitude.setText(mLocation.getLatitude() + "");
                 mLongitude.setText(mLocation.getLongitude() + "");
             }
-//            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//            mLocationRequest = new LocationRequest()
-//                    .setSmallestDisplacement(1000f)
-//                    .setInterval(10 * 60 * 1000)
-//                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//            mLocationCallback = new LocationCallback() {
-//                @Override
-//                public void onLocationResult(LocationResult result) {
-//                    mLatitude.setText(result.getLastLocation().getLatitude() + "");
-//                    mLongitude.setText(result.getLastLocation().getLongitude() + "");
-//                }
-//            };
-//            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
         }
     }
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (!hasPermission()) {
-//            requestPermissions();
-//        } else {
-//            updateLocation();
-//        }
-//    }
-
-//    @SuppressWarnings("MissingPermission")
-//    private void updateLocation() {
-//        mFusedLocationClient.getLastLocation()
-//                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Location> task) {
-//                        if(task.isSuccessful() && task.getResult() != null){
-//                            mLocation = task.getResult();
-//
-//                            mLatitude.setText("" + mLocation.getLatitude());
-//                            mLongitude.setText("" + mLocation.getLongitude());
-//                        }else{
-//                            return;
-//                        }
-//                    }
-//                });
-//    }
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(MainActivity.this,
