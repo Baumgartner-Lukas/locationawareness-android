@@ -14,6 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -22,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baumgartner.wy.pt_locationawareness.adapter.DayAdapter;
 import com.baumgartner.wy.pt_locationawareness.location.LocationTracker;
 import com.baumgartner.wy.pt_locationawareness.weather.Current;
 import com.baumgartner.wy.pt_locationawareness.weather.Day;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private Location mLocation;
     private LocationTracker mLocationTracker;
     private Forecast mForecast;
+    private Day[] mDays;
 
     @BindView(R.id.cityLabel)
     TextView mCityLabel;
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     TextView mSummaryLabel;
     @BindView(R.id.iconImageView)
     ImageView mIconImageView;
+    @BindView(R.id.recyclerView)
+    RecyclerView mRecyclerView;
 
 
     @Override
@@ -74,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
         mProgressBar.setVisibility(View.INVISIBLE);
 
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 mRefreshImageView.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 mLocation = mLocationTracker.getLocation();
+
                 getForecast(mLocation);
+
                 mCityLabel.setText(convertLocation(mLocation));
                 mRefreshImageView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
@@ -96,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
             mLocation = mLocationTracker.getLocation();
             mRefreshImageView.setVisibility(View.INVISIBLE);
             mProgressBar.setVisibility(View.VISIBLE);
+
             getForecast(mLocation);
+
             mRefreshImageView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);
             if (mLocation == null) {
@@ -170,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
         Drawable drawable = ContextCompat.getDrawable(this, current.getIconId());
         mIconImageView.setImageDrawable(drawable);
 
+        DayAdapter adapter = new DayAdapter(this, mDays);
+        mRecyclerView.setAdapter(adapter);
+
 
     }
 
@@ -186,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         String timezone = forecast.getString("timezone");
         JSONObject daily = forecast.getJSONObject("daily");
         JSONArray data = daily.getJSONArray("data");
-        Day[] days = new Day[data.length()];
+        mDays = new Day[data.length()];
         for(int i = 0; i < data.length(); i++){
             JSONObject jsonDay = data.getJSONObject(i);
             Day day = new Day();
@@ -194,11 +211,13 @@ public class MainActivity extends AppCompatActivity {
             day.setSummary(jsonDay.getString("summary"));
             day.setTemperatureMax(jsonDay.getDouble("temperatureMax"));
             day.setIcon(jsonDay.getString("icon"));
+            day.setTime(jsonDay.getLong("time"));
             day.setTimezone(timezone);
 
-            days[i] = day;
+            mDays[i] = day;
         }
-        return days;
+
+        return mDays;
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException{

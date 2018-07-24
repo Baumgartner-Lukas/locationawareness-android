@@ -28,7 +28,7 @@ public class Day {
         mSummary = summary;
     }
 
-    public double getTemperatureMax() {
+    public int getTemperatureMax() {
         double celsius = ((mTemperatureMax - 32) * 0.5555555556);
         return (int) Math.round(celsius);
     }
