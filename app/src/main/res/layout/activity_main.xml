@@ -36,10 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:src="@mipmap/refresh"
         app:layout_constraintBottom_toTopOf="@+id/cityLabel"
         app:layout_constraintEnd_toEndOf="@+id/cityLabel"
-        app:layout_constraintStart_toStartOf="@+id/cityLabel"
-        android:src="@mipmap/refresh"/>
+        app:layout_constraintStart_toStartOf="@+id/cityLabel" />
 
     <TextView
         android:id="@+id/cityLabel"
@@ -56,32 +56,41 @@
         android:id="@+id/summaryLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/placeholderLines"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@id/temperatureLabel"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/placeholderLines"/>
-
-    <AutoCompleteTextView
-        android:id="@+id/cityEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="150dp"
-        android:background="#40ffffff"
-        android:ems="10"
-        android:hint="@string/city_name"
-        android:imeOptions="actionDone"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/temperatureLabel"
-        app:layout_constraintEnd_toEndOf="@+id/temperatureLabel"
-        app:layout_constraintStart_toStartOf="@+id/temperatureLabel" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temperatureLabel" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/summaryLabel"
+        app:srcCompat="@mipmap/clear_day" />
+
+    <ImageView
+        android:id="@+id/degreeImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/temperatureLabel"
+        app:layout_constraintTop_toBottomOf="@+id/cityLabel"
+        app:srcCompat="@mipmap/degree" />
 </android.support.constraint.ConstraintLayout>
