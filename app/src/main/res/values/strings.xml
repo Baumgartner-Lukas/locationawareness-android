@@ -1,12 +1,10 @@
 <resources>
-    <string name="app_name">PT-locationawareness</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
+    <string name="app_name">JustWeather</string>
     <string name="placeholderLines">---</string>
     <string name="tap_to_enter_city">Tap to enter city</string>
     <string name="city_name">Bezirk eingeben</string>
     <string name="error_title">Hoppla!</string>
     <string name="error_message">Es ist ein Fehler aufgetreten.</string>
     <string name="error_ok_button_text">OK</string>
-    <string name="network_unavailable_message">Netzwerk inst nicht erreichbar</string>
+    <string name="network_unavailable_message">Netzwerk oder Standortdienste sind nicht erreichbar</string>
 </resources>

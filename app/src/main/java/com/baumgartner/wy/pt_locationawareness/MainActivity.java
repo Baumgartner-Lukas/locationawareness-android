@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -86,44 +87,57 @@ public class MainActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
+        mLocationTracker = new LocationTracker(this);
+        while (!hasPermission()) {
+            requestPermissions();
+        }
+
+        mRefreshImageView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        try {
+            if (isNetworkAvailable()) {
+                mLocation = mLocationTracker.getLocation();
+                getForecast(mLocation);
+                mCityLabel.setText(convertLocation(mLocation));
+            } else {
+                Toast.makeText(this, R.string.network_unavailable_message, Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mRefreshImageView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+
+
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mRefreshImageView.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                mLocation = mLocationTracker.getLocation();
 
-                getForecast(mLocation);
+                try {
+                    if (isNetworkAvailable()) {
+                        mLocation = mLocationTracker.getLocation();
+                        getForecast(mLocation);
+                        mCityLabel.setText(convertLocation(mLocation));
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.network_unavailable_message, Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                mCityLabel.setText(convertLocation(mLocation));
                 mRefreshImageView.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
         });
-
-        if (!hasPermission()) {
-            requestPermissions();
-        } else {
-            mLocationTracker = new LocationTracker(this);
-            mLocation = mLocationTracker.getLocation();
-            mRefreshImageView.setVisibility(View.INVISIBLE);
-            mProgressBar.setVisibility(View.VISIBLE);
-
-            getForecast(mLocation);
-
-            mRefreshImageView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.INVISIBLE);
-            if (mLocation == null) {
-                Toast.makeText(this, "Bitte Standortdienste aktivieren", Toast.LENGTH_SHORT).show();
-            } else {
-                mCityLabel.setText(convertLocation(mLocation));
-            }
-        }
     }
 
     private void getForecast(Location mLocation) {
         String url = FORECAST_URL + API_KEY + "/" + mLocation.getLatitude() + "," + mLocation.getLongitude() + "?lang=de";
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(url)
@@ -136,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                          // toggleRefresh();
+                            // toggleRefresh();
                         }
                     });
                     alertUserAboutError();
@@ -150,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
                             //toggleRefresh();
                         }
                     });
-                    try{
+                    try {
                         String jsonData = response.body().string();
                         Log.v(TAG, jsonData);
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             mForecast = parseForecastDetails(jsonData);
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -161,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                                     updateDisplay();
                                 }
                             });
-                        }else{
+                        } else {
                             alertUserAboutError();
                         }
                     } catch (JSONException e) {
@@ -170,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-        }else{
+        } else {
             Toast.makeText(this, R.string.network_unavailable_message, Toast.LENGTH_LONG).show();
         }
     }
@@ -204,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         JSONObject daily = forecast.getJSONObject("daily");
         JSONArray data = daily.getJSONArray("data");
         mDays = new Day[data.length()];
-        for(int i = 0; i < data.length(); i++){
+        for (int i = 0; i < data.length(); i++) {
             JSONObject jsonDay = data.getJSONObject(i);
             Day day = new Day();
 
@@ -220,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         return mDays;
     }
 
-    private Current getCurrentDetails(String jsonData) throws JSONException{
+    private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
 
@@ -260,22 +274,14 @@ public class MainActivity extends AppCompatActivity {
         return city;
     }
 
-    private boolean isNetworkAvailable(){
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        LocationManager lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        NetworkInfo info = cManager.getActiveNetworkInfo();
 
-        return info != null && info.isConnected();
+        return info != null && info.isConnected() && lManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-//    private void toggleRefresh(){
-//        if(mProgressBar.getVisibility() == View.INVISIBLE){
-//            mProgressBar.setVisibility(View.VISIBLE);
-//            mRefreshImageView.setVisibility(View.INVISIBLE);
-//        }else{
-//            mProgressBar.setVisibility(View.INVISIBLE);
-//            mRefreshImageView.setVisibility(View.VISIBLE);
-//        }
-//    }
 
     @Override
     protected void onResume() {
