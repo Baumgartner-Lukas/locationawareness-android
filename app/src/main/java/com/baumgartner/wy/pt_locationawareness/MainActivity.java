@@ -11,7 +11,10 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baumgartner.wy.pt_locationawareness.adapter.DayAdapter;
+import com.baumgartner.wy.pt_locationawareness.fragments.ViewPagerFragment;
 import com.baumgartner.wy.pt_locationawareness.location.LocationTracker;
 import com.baumgartner.wy.pt_locationawareness.weather.Current;
 import com.baumgartner.wy.pt_locationawareness.weather.Day;
@@ -78,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.placeholder, viewPagerFragment);
+        fragmentTransaction.commit();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);

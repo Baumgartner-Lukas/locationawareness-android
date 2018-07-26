@@ -8,6 +8,7 @@
     <string name="error_ok_button_text">OK</string>
     <string name="network_unavailable_message">Netzwerk oder Standortdienste sind nicht erreichbar</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam</string>
-    <string name="daily_button_text">Tage</string>
-    <string name="hourly_button_text">Stündlich</string>
+
+    <string name="daily_pager_caption">Tag</string>
+    <string name="hourly_pager_caption">Zeit</string>
 </resources>
