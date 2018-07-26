@@ -23,7 +23,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     @Override
     public DayViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.daily_list_item, parent, false);
+                .inflate(R.layout.weather_list_item, parent, false);
         return new DayViewHolder(view);
     }
 
@@ -39,22 +39,36 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     class DayViewHolder extends RecyclerView.ViewHolder {
-        TextView mDay;
+//        TextView mDay;
+//        TextView mTemperature;
+//        ImageView mIconImageView;
+
+        TextView mTimeLabel;
+        TextView mSummary;
         TextView mTemperature;
         ImageView mIconImageView;
 
         DayViewHolder(View itemView) {
             super(itemView);
 
-            mDay = itemView.findViewById(R.id.dayLabel);
-            mTemperature = itemView.findViewById(R.id.dayTemperatureLabel);
-            mIconImageView = itemView.findViewById(R.id.dayIconImageView);
+            mTimeLabel = itemView.findViewById(R.id.listTimeLabel);
+            //mSummary = itemView.findViewById(R.id.listSummaryLabel);
+            mTemperature = itemView.findViewById(R.id.listTemperatureLabel);
+            mIconImageView = itemView.findViewById(R.id.listIconImageView);
+
+//            mDay = itemView.findViewById(R.id.dayLabel);
+//            mTemperature = itemView.findViewById(R.id.dayTemperatureLabel);
+//            mIconImageView = itemView.findViewById(R.id.dayIconImageView);
         }
 
         void bindDay(Day day){
-            mDay.setText(day.getDayOfTheWeek());
-            mTemperature.setText(day.getTemperatureMax() + "");
+            mTimeLabel.setText(day.getDayOfTheWeek());
+           //mSummary.setText(day.getSummary());
+            mTemperature.setText(String.format("%d°C", day.getTemperatureMax()));
             mIconImageView.setImageResource(day.getIconId());
+//            mDay.setText(day.getDayOfTheWeek());
+//            mTemperature.setText(day.getTemperatureMax() + "");
+//            mIconImageView.setImageResource(day.getIconId());
         }
     }
 }

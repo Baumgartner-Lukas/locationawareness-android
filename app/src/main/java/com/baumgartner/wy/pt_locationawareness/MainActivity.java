@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
@@ -198,8 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
         DayAdapter adapter = new DayAdapter(this, mDays);
         mRecyclerView.setAdapter(adapter);
-
-
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
