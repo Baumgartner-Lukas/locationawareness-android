@@ -58,7 +58,7 @@ public class Day {
     }
 
     public String getDayOfTheWeek(){
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.GERMAN);
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.getDefault());
         formatter.setTimeZone(TimeZone.getTimeZone(mTimezone));
         Date dateTime = new Date(mTime * 1000);
         return formatter.format(dateTime);

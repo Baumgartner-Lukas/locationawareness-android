@@ -134,7 +134,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getForecast(Location mLocation) {
-        String url = FORECAST_URL + API_KEY + "/" + mLocation.getLatitude() + "," + mLocation.getLongitude() + "?lang=de";
+        String url = FORECAST_URL + API_KEY + "/" +
+                mLocation.getLatitude() +
+                "," + mLocation.getLongitude() +
+                "?lang=" + Locale.getDefault().getLanguage();
         if (isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
