@@ -32,6 +32,7 @@ import com.baumgartner.wy.pt_locationawareness.location.LocationTracker;
 import com.baumgartner.wy.pt_locationawareness.weather.Current;
 import com.baumgartner.wy.pt_locationawareness.weather.Day;
 import com.baumgartner.wy.pt_locationawareness.weather.Forecast;
+import com.baumgartner.wy.pt_locationawareness.weather.Hour;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,11 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private LocationTracker mLocationTracker;
     private Forecast mForecast;
     private Day[] mDays;
+    private Hour[] mHours;
 
     @BindView(R.id.cityLabel)
     TextView mCityLabel;
-    @BindView(R.id.progressBar)
-    ProgressBar mProgressBar;
     @BindView(R.id.refreshImageView)
     ImageView mRefreshImageView;
     @BindView(R.id.temperatureLabel)
@@ -83,25 +83,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.placeholder, viewPagerFragment);
-        fragmentTransaction.commit();
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
-
-        mProgressBar.setVisibility(View.INVISIBLE);
-
         mLocationTracker = new LocationTracker(this);
+
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(layoutManager);
+//        mRecyclerView.setHasFixedSize(true);
+
         while (!hasPermission()) {
             requestPermissions();
         }
 
-        mRefreshImageView.setVisibility(View.INVISIBLE);
-        mProgressBar.setVisibility(View.VISIBLE);
 
         try {
             if (isNetworkAvailable()) {
@@ -115,15 +106,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mRefreshImageView.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.INVISIBLE);
 
 
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRefreshImageView.setVisibility(View.INVISIBLE);
-                mProgressBar.setVisibility(View.VISIBLE);
 
                 try {
                     if (isNetworkAvailable()) {
@@ -137,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                mRefreshImageView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -209,16 +194,46 @@ public class MainActivity extends AppCompatActivity {
         Drawable drawable = ContextCompat.getDrawable(this, current.getIconId());
         mIconImageView.setImageDrawable(drawable);
 
-        DayAdapter adapter = new DayAdapter(this, mDays);
-        mRecyclerView.setAdapter(adapter);
+        ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.placeholder, viewPagerFragment);
+        fragmentTransaction.commit();
+
+//        DayAdapter adapter = new DayAdapter(this, mDays);
+//        mRecyclerView.setAdapter(adapter);
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast forecast = new Forecast();
         forecast.setCurrent(getCurrentDetails(jsonData));
         forecast.setDailyForecast(getDailyForecast(jsonData));
+        forecast.setHourlyForecast(getHourlyForecast(jsonData));
 
         return forecast;
+    }
+
+    private Hour[] getHourlyForecast(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        JSONObject hourly = forecast.getJSONObject("hourly");
+        JSONArray data = hourly.getJSONArray("data");
+
+        mHours = new Hour[data.length()];
+
+        for(int i = 0; i < data.length(); i++){
+            JSONObject jsonHour = data.getJSONObject(i);
+            Hour hour = new Hour();
+
+            hour.setSummary(jsonHour.getString("summary"));
+            hour.setIcon(jsonHour.getString("icon"));
+            hour.setTemperature(jsonHour.getDouble("temperature"));
+            hour.setTime(jsonHour.getLong("time"));
+            hour.setTimezone(timezone);
+
+            mHours[i] = hour;
+        }
+        return mHours;
     }
 
     private Day[] getDailyForecast(String jsonData) throws JSONException {
@@ -331,5 +346,13 @@ public class MainActivity extends AppCompatActivity {
                 this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public Day[] getDays() {
+        return mDays;
+    }
+
+    public Hour[] getHours(){
+        return mHours;
     }
 }

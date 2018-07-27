@@ -5,6 +5,7 @@ import com.baumgartner.wy.pt_locationawareness.R;
 public class Forecast {
     private Current mCurrent;
     private Day[] mDailyForecast;
+    private Hour[] mHourlyForecast;
 
     public Current getCurrent() {
         return mCurrent;
@@ -20,6 +21,14 @@ public class Forecast {
 
     public void setDailyForecast(Day[] dailyForecast) {
         mDailyForecast = dailyForecast;
+    }
+
+    public Hour[] getHourlyForecast() {
+        return mHourlyForecast;
+    }
+
+    public void setHourlyForecast(Hour[] hourlyForecast) {
+        mHourlyForecast = hourlyForecast;
     }
 
     public static int getIconId(String iconString){

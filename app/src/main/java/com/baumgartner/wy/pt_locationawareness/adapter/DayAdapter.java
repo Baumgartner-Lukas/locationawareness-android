@@ -39,12 +39,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     class DayViewHolder extends RecyclerView.ViewHolder {
-//        TextView mDay;
-//        TextView mTemperature;
-//        ImageView mIconImageView;
 
         TextView mTimeLabel;
-        TextView mSummary;
         TextView mTemperature;
         ImageView mIconImageView;
 
@@ -52,23 +48,14 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
             super(itemView);
 
             mTimeLabel = itemView.findViewById(R.id.listTimeLabel);
-            //mSummary = itemView.findViewById(R.id.listSummaryLabel);
             mTemperature = itemView.findViewById(R.id.listTemperatureLabel);
             mIconImageView = itemView.findViewById(R.id.listIconImageView);
-
-//            mDay = itemView.findViewById(R.id.dayLabel);
-//            mTemperature = itemView.findViewById(R.id.dayTemperatureLabel);
-//            mIconImageView = itemView.findViewById(R.id.dayIconImageView);
         }
 
         void bindDay(Day day){
             mTimeLabel.setText(day.getDayOfTheWeek());
-           //mSummary.setText(day.getSummary());
             mTemperature.setText(String.format("%d°C", day.getTemperatureMax()));
             mIconImageView.setImageResource(day.getIconId());
-//            mDay.setText(day.getDayOfTheWeek());
-//            mTemperature.setText(day.getTemperatureMax() + "");
-//            mIconImageView.setImageResource(day.getIconId());
         }
     }
 }
